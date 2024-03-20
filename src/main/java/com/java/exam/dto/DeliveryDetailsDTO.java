@@ -7,7 +7,9 @@ import lombok.Setter;
 @Setter
 public class DeliveryDetailsDTO {
 
-    private DeliveryItemInformationDTO deliveryItemsInfo;
-    private String voucherCode;
+    private Double weight;
+    private Double height;
+    private Double width;
+    private Double length;
 
 }
