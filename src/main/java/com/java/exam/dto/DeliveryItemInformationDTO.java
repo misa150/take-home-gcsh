@@ -7,9 +7,9 @@ import lombok.Setter;
 @Setter
 public class DeliveryItemInformationDTO {
 
-    private Integer weight;
-    private Integer height;
-    private Integer width;
-    private Integer length;
+    private Double weight;
+    private Double height;
+    private Double width;
+    private Double length;
 
 }
