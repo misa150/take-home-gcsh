@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 @Setter
 public class DeliveryComputationProperties {
 
-    private Integer conditionReject;
-    private Integer conditionHeavyParcel;
-    private Integer conditionSmallParcel;
-    private Integer conditionMediumParcel;
+    private Double conditionReject;
+    private Double conditionHeavyParcel;
+    private Double conditionSmallParcel;
+    private Double conditionMediumParcel;
 
     private Double costHeavyParcel;
     private Double costSmallParcel;

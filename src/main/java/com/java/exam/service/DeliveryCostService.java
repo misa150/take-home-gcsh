@@ -4,7 +4,7 @@ package com.java.exam.service;
 import com.java.exam.constants.DeliveryComputationProperties;
 import com.java.exam.dto.DeliveryCostDTO;
 import com.java.exam.dto.DeliveryDetailsDTO;
-import com.java.exam.dto.DeliveryItemInformationDTO;
+import com.java.exam.dto.VoucherCodeDTO;
 import com.java.exam.exception.DeliveryItemException;
 import com.java.exam.service.rules.*;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +18,12 @@ public class DeliveryCostService {
 
     private final DeliveryComputationProperties deliveryComputationProperties;
 
-    public DeliveryCostDTO computeDeliveryCost(DeliveryDetailsDTO deliveryDetails) {
-        DeliveryItemInformationDTO deliveryItemInfo = deliveryDetails.getDeliveryItemsInfo();
-        validateDeliveryItem(deliveryItemInfo);
-        Double volume = computeVolume(deliveryItemInfo);
+    public DeliveryCostDTO computeDeliveryCost(DeliveryDetailsDTO deliveryDetails, VoucherCodeDTO voucherCod) {
+        validateDeliveryItem(deliveryDetails);
+        Double volume = computeVolume(deliveryDetails);
         log.info("VOLUME IS {}", volume);
 
-        return determineRuleAndGetCost(deliveryItemInfo.getWeight(), volume);
+        return determineRuleAndGetCost(deliveryDetails.getWeight(), volume);
     }
 
     private DeliveryCostDTO determineRuleAndGetCost(Double weight, Double volume) {
@@ -59,13 +58,13 @@ public class DeliveryCostService {
                 .build();
     }
 
-    private Double computeVolume(DeliveryItemInformationDTO deliveryItemInfo) {
+    private Double computeVolume(DeliveryDetailsDTO deliveryItemInfo) {
         return deliveryItemInfo.getLength() *
                 deliveryItemInfo.getHeight() *
                 deliveryItemInfo.getWidth();
     }
 
-    private void validateDeliveryItem(DeliveryItemInformationDTO deliveryItemInfo) {
+    private void validateDeliveryItem(DeliveryDetailsDTO deliveryItemInfo) {
         if(deliveryItemInfo == null ||
                 deliveryItemInfo.getWeight() == null ||
                 deliveryItemInfo.getHeight() == null ||

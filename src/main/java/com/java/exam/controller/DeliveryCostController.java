@@ -2,6 +2,7 @@ package com.java.exam.controller;
 
 import com.java.exam.dto.DeliveryCostDTO;
 import com.java.exam.dto.DeliveryDetailsDTO;
+import com.java.exam.dto.VoucherCodeDTO;
 import com.java.exam.service.DeliveryCostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,8 +14,9 @@ public class DeliveryCostController {
 
     private final DeliveryCostService deliveryCostService;
 
-    @GetMapping(value = {"/compute"})
-    public DeliveryCostDTO computeDeliveryCost(@RequestBody DeliveryDetailsDTO deliveryDetails) {
-        return deliveryCostService.computeDeliveryCost(deliveryDetails);
+    @GetMapping(value = {"/compute/{voucherCode}"})
+    public DeliveryCostDTO computeDeliveryCost(@RequestBody DeliveryDetailsDTO deliveryDetails,
+                                               @PathVariable("voucherCode") VoucherCodeDTO voucherCode) {
+        return deliveryCostService.computeDeliveryCost(deliveryDetails, voucherCode);
     }
 }
