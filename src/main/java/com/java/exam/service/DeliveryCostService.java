@@ -18,7 +18,7 @@ public class DeliveryCostService {
 
     private final DeliveryComputationProperties deliveryComputationProperties;
 
-    public DeliveryCostDTO computeDeliveryCost(VoucherCodeDTO voucherCode, DeliveryDetailsDTO deliveryDetails) {
+    public DeliveryCostDTO computeDeliveryCost(DeliveryDetailsDTO deliveryDetails, VoucherCodeDTO voucherCod) {
         validateDeliveryItem(deliveryDetails);
         Double volume = computeVolume(deliveryDetails);
         log.info("VOLUME IS {}", volume);
