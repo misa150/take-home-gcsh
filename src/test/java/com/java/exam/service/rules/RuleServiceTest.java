@@ -1,7 +1,7 @@
 package com.java.exam.service.rules;
 
 import com.java.exam.constants.DeliveryComputationProperties;
-import com.java.exam.exception.DeliveryItemException;
+import com.java.exam.exception.delivery.DeliveryItemException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +43,7 @@ class RuleServiceTest {
                 .thenReturn(REJECT_WEIGHT_CONDITION_IN_KG);
 
         // when
-        final DeliveryItemException exception = assertThrows(DeliveryItemException.class,
+        DeliveryItemException exception = assertThrows(DeliveryItemException.class,
                 ()-> cut.determineRuleAndGetCost(weight, volume));
 
         // then

@@ -1,11 +1,11 @@
-package com.java.exam.exception;
+package com.java.exam.exception.voucher;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class DeliveryRejectionException extends RuntimeException {
-    public DeliveryRejectionException(String message) {
+public class VoucherExpiredException extends RuntimeException {
+    public VoucherExpiredException(String message) {
         super(message);
     }
 }

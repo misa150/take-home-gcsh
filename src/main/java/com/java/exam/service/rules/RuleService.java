@@ -1,8 +1,7 @@
 package com.java.exam.service.rules;
 
 import com.java.exam.constants.DeliveryComputationProperties;
-import com.java.exam.dto.DeliveryCostDTO;
-import com.java.exam.exception.DeliveryItemException;
+import com.java.exam.exception.delivery.DeliveryItemException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,9 @@ public class RuleService {
     public BigDecimal determineRuleAndGetCost(Double weight, Double volume) {
         if(weight > deliveryComputationProperties.getConditionReject()) {
             log.info("USED REJECT PARCEL LOGIC");
+
+            String errorMessage = "Item weight is exceeding allowed weight";
+            log.warn(errorMessage);
             throw new DeliveryItemException("Item weight is exceeding allowed weight");
         }
 
