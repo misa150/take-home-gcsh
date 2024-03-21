@@ -16,7 +16,7 @@ public class DeliveryCostController {
 
     @GetMapping(value = {"/compute/{voucherCode}"})
     public DeliveryCostDTO computeDeliveryCost(@RequestBody DeliveryDetailsDTO deliveryDetails,
-                                               @PathVariable("voucherCode") VoucherCodeDTO voucherCode) {
+                                               @PathVariable VoucherCodeDTO voucherCode) {
         return deliveryCostService.computeDeliveryCost(deliveryDetails, voucherCode);
     }
 }

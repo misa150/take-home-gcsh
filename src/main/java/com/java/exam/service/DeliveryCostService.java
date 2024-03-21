@@ -1,61 +1,39 @@
 package com.java.exam.service;
 
 
-import com.java.exam.constants.DeliveryComputationProperties;
 import com.java.exam.dto.DeliveryCostDTO;
 import com.java.exam.dto.DeliveryDetailsDTO;
 import com.java.exam.dto.VoucherCodeDTO;
-import com.java.exam.exception.DeliveryItemException;
-import com.java.exam.service.rules.*;
+import com.java.exam.exception.delivery.DeliveryItemException;
+import com.java.exam.service.rules.RuleService;
+import com.java.exam.service.voucher.VoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeliveryCostService {
 
-    private final DeliveryComputationProperties deliveryComputationProperties;
+    private final RuleService ruleService;
+    private final VoucherService voucherService;
 
-    public DeliveryCostDTO computeDeliveryCost(DeliveryDetailsDTO deliveryDetails, VoucherCodeDTO voucherCod) {
+    public DeliveryCostDTO computeDeliveryCost(DeliveryDetailsDTO deliveryDetails, VoucherCodeDTO voucherCode) {
         validateDeliveryItem(deliveryDetails);
         Double volume = computeVolume(deliveryDetails);
-        log.info("VOLUME IS {}", volume);
+        log.info("VOLUME IS {} || WEIGHT IS {}", volume, deliveryDetails.getWeight());
 
-        return determineRuleAndGetCost(deliveryDetails.getWeight(), volume);
-    }
+        BigDecimal cost = ruleService.determineRuleAndGetCost(deliveryDetails.getWeight(), volume);
 
-    private DeliveryCostDTO determineRuleAndGetCost(Double weight, Double volume) {
-        if(weight > deliveryComputationProperties.getConditionReject()) {
-            log.info("USED REJECT PARCEL LOGIC");
-            throw new DeliveryItemException("Item weight is exceeding allowed weight");
+        if(voucherCode != VoucherCodeDTO.NONE) {
+            log.info("Using a voucher");
+            cost = voucherService.useVoucher(cost, voucherCode);
         }
 
-        if(weight > deliveryComputationProperties.getConditionHeavyParcel()) {
-            log.info("USED HEAVY PARCEL LOGIC");
-            return computeAndReturnCost(weight, new HeavyParcelRule(deliveryComputationProperties));
-        }
-
-        if(volume < deliveryComputationProperties.getConditionSmallParcel()) {
-            log.info("USED SMALL PARCEL LOGIC");
-            return computeAndReturnCost(volume, new SmallParcelRule(deliveryComputationProperties));
-        }
-
-        if(volume < deliveryComputationProperties.getConditionMediumParcel() &&
-                volume > deliveryComputationProperties.getConditionSmallParcel()) {
-            log.info("USED MEDIUM PARCEL LOGIC");
-            return computeAndReturnCost(volume, new MediumParcelRule(deliveryComputationProperties));
-        }
-
-        log.info("USED LARGE PARCEL LOGIC");
-        return computeAndReturnCost(volume, new LargeParcelRule(deliveryComputationProperties));
-    }
-
-    private DeliveryCostDTO computeAndReturnCost(Double computationBasis, DeliveryRule deliveryRule) {
-        return DeliveryCostDTO.builder()
-                .cost(deliveryRule.computeCost(computationBasis))
-                .build();
+        return computeAndReturnCost(cost);
     }
 
     private Double computeVolume(DeliveryDetailsDTO deliveryItemInfo) {
@@ -69,7 +47,15 @@ public class DeliveryCostService {
                 deliveryItemInfo.getWeight() == null ||
                 deliveryItemInfo.getHeight() == null ||
                 deliveryItemInfo.getLength() == null) {
-            throw new DeliveryItemException("Delivery Item information has null values");
+            String errorMessage = "Delivery Item information has null values";
+            log.warn(errorMessage);
+            throw new DeliveryItemException(errorMessage);
         }
+    }
+
+    private DeliveryCostDTO computeAndReturnCost(BigDecimal cost) {
+        return DeliveryCostDTO.builder()
+                .cost(cost)
+                .build();
     }
 }
