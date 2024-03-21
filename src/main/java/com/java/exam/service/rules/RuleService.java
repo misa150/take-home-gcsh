@@ -17,30 +17,24 @@ public class RuleService {
 
     public BigDecimal determineRuleAndGetCost(Double weight, Double volume) {
         if(weight > deliveryComputationProperties.getConditionReject()) {
-            log.info("USED REJECT PARCEL LOGIC");
-
             String errorMessage = "Item weight is exceeding allowed weight";
             log.warn(errorMessage);
             throw new DeliveryItemException("Item weight is exceeding allowed weight");
         }
 
         if(weight > deliveryComputationProperties.getConditionHeavyParcel()) {
-            log.info("USED HEAVY PARCEL LOGIC");
             return computeCost(weight, new HeavyParcelRule(deliveryComputationProperties));
         }
 
         if(volume < deliveryComputationProperties.getConditionSmallParcel()) {
-            log.info("USED SMALL PARCEL LOGIC");
             return computeCost(volume, new SmallParcelRule(deliveryComputationProperties));
         }
 
         if(volume < deliveryComputationProperties.getConditionMediumParcel() &&
                 volume > deliveryComputationProperties.getConditionSmallParcel()) {
-            log.info("USED MEDIUM PARCEL LOGIC");
             return computeCost(volume, new MediumParcelRule(deliveryComputationProperties));
         }
 
-        log.info("USED LARGE PARCEL LOGIC");
         return computeCost(volume, new LargeParcelRule(deliveryComputationProperties));
     }
 
